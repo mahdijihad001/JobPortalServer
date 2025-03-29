@@ -1,3 +1,4 @@
+const { genarateToken } = require("../Middleware/genatareToken");
 const { userModel } = require("./userModel");
 
 const createUserController = async(req , res) =>{
@@ -25,6 +26,7 @@ const postUserLoginController = async(req , res) =>{
         const {username , password} = req.body;
         // Find User
         const findUser = await userModel.findOne({username : username});
+        const sendUser = await userModel.findOne({username : username} , {password : 0 , __v : 0});
 
         if(!findUser){
             return res.status(404).send({
@@ -42,14 +44,23 @@ const postUserLoginController = async(req , res) =>{
             message : "Please type valid information!"
         })
        }
-
-
-       
+    //    Genarate Token    
+       const token = await genarateToken(findUser._id)
+    //    Set Cookie
+       res.cookie("token" , token , {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+       })
 
         res.status(200).send({
             success : true,
-            message : "User Found"
+            message : "Login Success!",
+            token,
+            user : sendUser
         })
+
+
 
 
     } catch (error) {
