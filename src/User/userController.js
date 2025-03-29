@@ -61,8 +61,6 @@ const postUserLoginController = async(req , res) =>{
         })
 
 
-
-
     } catch (error) {
         return res.status(400).send({
             success : false,
@@ -90,4 +88,29 @@ const getAllUserController = async(req , res) =>{
 }
 
 
-module.exports = {createUserController , getAllUserController , postUserLoginController};
+const updateUserProfile = async(req , res) =>{
+    try {
+        const id = req.params.id;
+        const result = await userModel.findByIdAndUpdate(id , req.body , {new : true})
+
+        if(!result){
+            return res.status(404).send({
+                success : false,
+                message : "User not found"
+            })
+        };
+
+        res.status(200).send({
+            success : true , 
+            message : "User profile update success"
+        })
+
+    } catch (error) {
+        return res.status(400).send({
+            success : false,
+            message : "Bad Request! Profile not update.."
+        })
+    }
+}
+
+module.exports = {createUserController , getAllUserController , postUserLoginController , updateUserProfile};
