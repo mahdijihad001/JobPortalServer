@@ -73,6 +73,8 @@ const userSchema = new mongoose.Schema({
     description : {
         type : String
     }
+} , {
+    timestamps : true
 });
 
 userSchema.pre("save", async function (next) {
@@ -83,8 +85,8 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.compairePassword = async function(plaintextPassword){
-    return await bcrypt.compare(plaintextPassword , this.password)
-}
+    return await bcrypt.compare(plaintextPassword , this.password);
+};
 
 const userModel = mongoose.model("user" , userSchema);
 
