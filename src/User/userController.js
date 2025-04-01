@@ -119,16 +119,16 @@ const findSingleUser = async (req, res) => {
     try {
 
         const { id } = req.params;
-        if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).send({success : false , message : "Invalid user"});
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ success: false, message: "Invalid user" });
         }
         const result = await userModel.findOne({ id: id });
 
         if (!result) {
-            return res.status(400).send({success : false , message : "User not found"});
+            return res.status(400).send({ success: false, message: "User not found" });
         };
 
-        res.status(200).send({success : true  , message : "User founded!!" , data : result})
+        res.status(200).send({ success: true, message: "User founded!!", data: result })
 
     } catch (error) {
         return res.status(404).send({
@@ -136,6 +136,35 @@ const findSingleUser = async (req, res) => {
             message: "User not found!"
         })
     }
+};
+
+const deleteuser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ success: false, message: "Invalid user" });
+        };
+
+        const result = await userModel.findByIdAndDelete(id);
+
+        res.status(200).send({ success: true, message: "User deleted!" })
+
+    } catch (error) {
+        return res.status(404).send({ success: false, message: "User not found" })
+    }
+};
+
+const logOutUser = async (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+        });
+        res.status(200).send({ success: true, message: "User log out" });
+    } catch (error) {
+        return res.status(400).send({ success: false, message: "User logout success!" });
+    }
 }
 
-module.exports = { createUserController, getAllUserController, postUserLoginController, updateUserProfile , findSingleUser};
+module.exports = { createUserController, getAllUserController, postUserLoginController, updateUserProfile, findSingleUser, deleteuser , logOutUser };
