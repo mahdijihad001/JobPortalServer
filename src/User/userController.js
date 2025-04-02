@@ -7,6 +7,13 @@ const createUserController = async (req, res) => {
         const result = await userModel({ ...req.body });
         await result.save();
 
+        if(!result){
+            return res.status(400).send({
+                success : false,
+                message : "Bad request! Please try another way."
+            })
+        }
+
         res.status(201).send({
             success: true,
             message: "User resistraction success"
