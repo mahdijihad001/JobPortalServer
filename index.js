@@ -5,10 +5,12 @@ require("dotenv").config();
 const port = process.env.port;
 const mongoose = require("mongoose");
 const { userRouter } = require("./src/User/userRouter");
+const { jobRouter } = require("./src/Job/jobRouter");
 
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({extended : true}));
 app.use(cors({
     origin : `http://localhost:5173`,
     credentials : true
@@ -17,6 +19,7 @@ app.use(cors({
 
 // Router
 app.use("/user" , userRouter);
+app.use("/job" , jobRouter);
 
 app.get("/" , async(req , res) =>{
     res.send({
